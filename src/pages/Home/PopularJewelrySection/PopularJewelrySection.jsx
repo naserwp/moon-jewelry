@@ -11,7 +11,7 @@ const PopularJewelrySection = () => {
 
   useEffect(() => {
     // Fetch data from jewelry.json when the component mounts
-    fetch('/jewelry.json') // Replace with the actual path to your jewelry.json file
+    fetch('http://localhost:30001/jewelry') // Replace with the actual path to your jewelry.json file
       .then((response) => response.json())
       .then((data) => {
         // Filter or process the data if needed

@@ -7,9 +7,10 @@ const AllJewelry = () => {
 
   useEffect(() => {
     // Fetch data from your jewelry.json file
-    fetch('/jewelry.json') // Replace with the actual path to your jewelry.json file
+    fetch('http://localhost:30001/jewelry') // Replace with the actual path to your jewelry.json file
       .then((response) => response.json())
       .then((data) => {
+        console.log('Fetched data:', data); // Add this line to check the fetched data
         // Assuming your JSON file contains an array of jewelry data
         setJewelryData(data);
       })
@@ -17,6 +18,7 @@ const AllJewelry = () => {
         console.error('Error fetching jewelry data:', error);
       });
   }, []);
+  
 
   const loadMoreJewelry = () => {
     // Increase the number of visible cards by 3

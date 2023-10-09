@@ -1,10 +1,16 @@
 // import React from 'react';
+import { FaBeer, FaFacebookF, FaGoogle, FaTwitter, FaUserAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full sm:w-96">
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+        <div className="text-2xl font-semibold mb-4 flex items-center gap-3">
+          <FaUserAlt></FaUserAlt>
+          Login
+        </div>
+
 
         {/* Username */}
         <div className="mb-4">
@@ -48,14 +54,19 @@ const LoginPage = () => {
           <span className="text-gray-500">Or login with:</span>
           <button className="text-3xl text-indigo-600 hover:text-indigo-700">
             <i className="fab fa-facebook"></i>
+            <FaFacebookF></FaFacebookF>
           </button>
           <button className="text-3xl text-blue-400 hover:text-blue-500">
-            <i className="fab fa-twitter"></i>
+            <FaTwitter></FaTwitter>
           </button>
           <button className="text-3xl text-red-600 hover:text-red-700">
-            <i className="fab fa-google"></i>
+            <FaGoogle></FaGoogle>
           </button>
         </div>
+        <div>
+          <p>If you haven't created an account yet, you can easily do so by  <Link to="/signup" className="text-red-700 font-bold underline">signing up here</Link>.</p>
+        </div>
+
       </div>
     </div>
   );
