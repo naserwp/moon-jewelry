@@ -13,6 +13,7 @@ import Blog from "../pages/Blog/Blog";
 import UserProfile from "../pages/Login/UserProfile/UserProfile";
 import ClientDashboard from "../pages/Private/ClientDashboard/ClientDashboard";
 import OwnerDashboard from "../pages/Private/OwnerDashboard/OwnerDashboard";
+import View from "../pages/Home/View/View";
 
 
 
@@ -61,7 +62,12 @@ import OwnerDashboard from "../pages/Private/OwnerDashboard/OwnerDashboard";
       {
         path: 'owner-dashboard',
         element: <OwnerDashboard></OwnerDashboard>
+      },
+      {
+        path: `view/:id`,
+        element: <View></View>
       }
+      
       ]
     },
   ]);
