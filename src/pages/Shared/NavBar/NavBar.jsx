@@ -5,9 +5,10 @@ import userProfilePic from '../../../assets/category/cate5.jpg';
 
 const NavBar = () => {
     const navOptions = <>
-        <li><a>Item 1</a></li>
-        <li><a>Parent</a></li>
-        <li><a>Item 3</a></li>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/all-jewelry">All Jewelry</Link></li>
+        <li><Link to="/my-jewelry">My Jewelry</Link></li>
+        <li><Link to="/blog">Blog</Link></li>
     </>
 
     return (
@@ -42,13 +43,17 @@ const NavBar = () => {
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li>
-                                <a className="justify-between">
+                                <Link to="/profile" className="justify-between">
                                     Profile
                                     <span className="badge">New</span>
-                                </a>
+                                </Link>
                             </li>
-                            <li><a>Settings</a></li>
-                            <li><a>Logout</a></li>
+                            <li><Link to="/login">Login</Link></li>
+                            <li><Link to="/signup">Signup</Link></li>
+                            <li><Link to="/profile">Profile</Link></li>
+                            <li><Link to="/client-dashboard">Client Dashboard</Link></li>
+                            <li><Link to="/owner-dashboard">Owner Dashboard</Link></li>
+                            <li><Link>Logout</Link></li>
                         </ul>
                     </div>
                 </div>

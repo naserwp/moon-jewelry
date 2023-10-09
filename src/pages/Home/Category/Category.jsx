@@ -18,6 +18,7 @@ import cate7 from '../../../assets/category/cate1.jpg';
 import cate8 from '../../../assets/category/cate4.jpg';
 import cate9 from '../../../assets/category/cate2.jpg';
 import cate10 from '../../../assets/category/cate5.jpg';
+import SectionHeading from '../../../component/SectionHeading/SectionHeading';
 
 const Category = () => {
 
@@ -31,6 +32,10 @@ const Category = () => {
 
     return (
         <div style={categoryStyle}>
+            <SectionHeading
+            subHeading={"Test sub heading text"}
+            heading={"Test Heading"}
+            ></SectionHeading>
             <Swiper
                 slidesPerView={4}
                 spaceBetween={10}
