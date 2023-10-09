@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import logoImg from '../../../assets/MoonJewelery1.png';
 import userProfilePic from '../../../assets/category/cate5.jpg';
+import { useContext } from 'react';
+import { AuthContext } from '../../../providers/AuthProvider';
+import { FaUser } from 'react-icons/fa';
 
 
 const NavBar = () => {
+
+    const {user} = useContext(AuthContext)
+
     const navOptions = <>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/all-jewelry">All Jewelry</Link></li>
@@ -43,17 +49,26 @@ const NavBar = () => {
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li>
-                                <Link to="/profile" className="justify-between">
-                                    Profile
+                                {user && <Link to="/profile" className="justify-between">
+
+                                    <div className='flex gap-2'>
+                                        <FaUser></FaUser>
+                                    {/* {user.displayName} */}
+                                    </div>
                                     <span className="badge">New</span>
-                                </Link>
+                                </Link>}
                             </li>
                             <li><Link to="/login">Login</Link></li>
                             <li><Link to="/signup">Signup</Link></li>
                             <li><Link to="/profile">Profile</Link></li>
                             <li><Link to="/client-dashboard">Client Dashboard</Link></li>
                             <li><Link to="/owner-dashboard">Owner Dashboard</Link></li>
-                            <li><Link>Logout</Link></li>
+                            <li>
+                                { user ? 
+                                <Link>Logout</Link> :
+                                <Link>Login</Link>
+                            }
+                            </li>
                         </ul>
                     </div>
                 </div>

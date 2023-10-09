@@ -174,6 +174,19 @@ const SignUpPage = () => {
             ></textarea>
           </div>
 
+          {/* Terms and Conditions Checkbox */}
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="acceptTerms"
+                className="form-checkbox h-5 w-5 text-indigo-600"
+              />
+              <span className="ml-2 text-gray-700">
+                I accept the <a href="/terms">Terms and Conditions</a>
+              </span>
+            </label>
+          </div>
           {/* Sign Up Button */}
           <button
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300"

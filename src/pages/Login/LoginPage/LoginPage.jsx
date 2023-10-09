@@ -20,7 +20,7 @@ const LoginPage = () => {
           <input
             type="text"
             id="username"
-            name="username"
+            name="email"
             className="mt-1 p-2 w-full border rounded-md"
             placeholder="Enter your username"
           />
