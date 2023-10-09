@@ -7,7 +7,7 @@ const AllJewelry = () => {
 
   useEffect(() => {
     // Fetch data from your jewelry.json file
-    fetch('http://localhost:30001/jewelry') // Replace with the actual path to your jewelry.json file
+    fetch('https://jewelry-shop-server-ashy.vercel.app/jewelry') // Replace with the actual path to your jewelry.json file
       .then((response) => response.json())
       .then((data) => {
         console.log('Fetched data:', data); // Add this line to check the fetched data
