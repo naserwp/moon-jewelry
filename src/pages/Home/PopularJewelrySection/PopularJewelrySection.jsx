@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SectionHeading from '../../../component/SectionHeading/SectionHeading';
 import ViewJewelryDetails from '../../viewJewelryDetails/viewJewelryDetails';
+import { Link } from 'react-router-dom';
 
 
 const PopularJewelrySection = () => {
@@ -55,6 +56,13 @@ const PopularJewelrySection = () => {
             />
             <h3 className="text-xl font-semibold">{item.title}</h3>
             <p className="text-gray-600 mb-2">{item.price}</p>
+            <button
+              className="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-md cursor-pointer mr-2"
+            >
+             
+             <Link to={`/view/${item.id}`}>View to see</Link>
+
+            </button>
             <button
               onClick={() => viewJewelryDetails(item)}
               className="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-md cursor-pointer mr-2"
