@@ -1,6 +1,9 @@
 // import React from 'react';
 
+import useTitle from "../../../hooks/useTitle";
+
 const OwnerDashboard = () => {
+  useTitle('Owner Dashboard') 
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-semibold mb-6">Owner Dashboard</h1>

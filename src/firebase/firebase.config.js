@@ -12,12 +12,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCQ1DOR5SCIVfSWJjGay0A3GLYWY1doB_0",
-  authDomain: "jewelry-dokan.firebaseapp.com",
-  projectId: "jewelry-dokan",
-  storageBucket: "jewelry-dokan.appspot.com",
-  messagingSenderId: "726287219526",
-  appId: "1:726287219526:web:7a4d66672cb1e281b00347"
+  apiKey: import.meta.env.VITE_apiKey,
+  authDomain: import.meta.env.VITE_authDomain,
+  projectId: import.meta.env.VITE_projectId,
+  storageBucket: import.meta.env.VITE_storageBucket,
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId
 };
 
 

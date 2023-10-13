@@ -1,0 +1,7 @@
+.category-cover{
+    background-image: url(../../../assets/category/cate_bg1.jpg);
+    width: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}

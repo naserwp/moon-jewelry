@@ -6,7 +6,7 @@ const View = () => {
   const [item, setItem] = useState(null);
 
   useEffect(() => {
-    fetch(`https://jewelry-shop-server-ashy.vercel.app/jewelry/${id}`)
+    fetch(`https://jewelry-shop-server-foap0zec1-naserwp.vercel.app/jewelry/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setItem(data);

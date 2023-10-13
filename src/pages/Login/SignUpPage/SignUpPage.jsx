@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react';
 // import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { AuthContext } from '../../../providers/AuthProvider';
+import useTitle from '../../../hooks/useTitle';
 
 const SignUpPage = () => {
 
-  const {createUser} = useContext(AuthContext);
-
+  const { createUser } = useContext(AuthContext);
+  const [isAccepted, setIsAccepted] = useState(false); 
+  useTitle('Sign Up')  
   const handleRegister = event => {
     event.preventDefault();
     const form = event.target;
@@ -22,13 +24,13 @@ const SignUpPage = () => {
     console.log(name, email, password, confirmPassword, photoUrl, gender, phoneNumber, address, acceptTerms)
 
     createUser(email, password)
-    .then(result => {
-      const createdUser = result.user;
-      console.log(createdUser);
-    })
-    .catch(error => {
-      console.log(error)
-    })
+      .then(result => {
+        const createdUser = result.user;
+        console.log(createdUser);
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   // const [formData, setFormData] = useState({
@@ -64,6 +66,10 @@ const SignUpPage = () => {
   //   }
   // };
 
+   // Handle the checkbox change
+   const handleAccepted = (event) => {
+    setIsAccepted(event.target.checked);
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full sm:w-96">
@@ -193,6 +199,7 @@ const SignUpPage = () => {
               <input
                 type="checkbox"
                 name="acceptTerms"
+                onChange={handleAccepted} // Change 'onClick' to 'onChange'
                 className="form-checkbox h-5 w-5 text-indigo-600"
               />
               <span className="ml-2 text-gray-700">
@@ -202,6 +209,8 @@ const SignUpPage = () => {
           </div>
           {/* Sign Up Button */}
           <button
+            disabled={!isAccepted} // Use '!isAccepted' to disable when not accepted
+            type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300"
           >
             Sign Up

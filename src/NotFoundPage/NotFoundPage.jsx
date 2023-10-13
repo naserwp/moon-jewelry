@@ -1,5 +1,8 @@
+import useTitle from "../hooks/useTitle";
 
+// import useTitle from '../hooks/useTitle'
 const NotFoundPage = () => {
+useTitle('404 Not Found')  
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="max-w-md p-6 bg-white shadow-lg rounded-lg">

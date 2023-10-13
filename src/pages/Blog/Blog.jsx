@@ -1,6 +1,10 @@
 // import React from 'react';
 
+import useTitle from "../../hooks/useTitle";
+
 const Blog = () => {
+  useTitle('Blog') 
+
   // Dummy data for blog posts (replace with your actual data)
   const blogPosts = [
     {

@@ -14,6 +14,9 @@ import UserProfile from "../pages/Login/UserProfile/UserProfile";
 import ClientDashboard from "../pages/Private/ClientDashboard/ClientDashboard";
 import OwnerDashboard from "../pages/Private/OwnerDashboard/OwnerDashboard";
 import View from "../pages/Home/View/View";
+import PrivateRoute from "../pages/Private/PrivateRoute/PrivateRoute";
+import Terms from "../pages/Terms/Terms";
+import Contact from "../pages/Contact/Contact";
 
 
 
@@ -45,7 +48,9 @@ import View from "../pages/Home/View/View";
       },
       {
         path: 'my-jewelry',
-        element: <MyJewelry></MyJewelry>
+        element: <PrivateRoute>
+            <MyJewelry></MyJewelry>
+        </PrivateRoute>
       },
       {
         path: 'blog',
@@ -66,6 +71,14 @@ import View from "../pages/Home/View/View";
       {
         path: `view/:id`,
         element: <View></View>
+      },
+      {
+        path: 'terms',
+        element: <Terms></Terms>
+      },
+      {
+        path: 'contact',
+        element: <Contact></Contact>
       }
       
       ]

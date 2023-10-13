@@ -1,8 +1,36 @@
 // import React from 'react';
-import { FaBeer, FaFacebookF, FaGoogle, FaTwitter, FaUserAlt } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { FaFacebookF, FaGoogle, FaTwitter, FaUserAlt } from 'react-icons/fa';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../providers/AuthProvider';
+import useTitle from '../../../hooks/useTitle';
 
 const LoginPage = () => {
+  useTitle('Login') 
+  const { signIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log("LOgin Page LocatiON:", location);
+  const from = location.state?.from?.pathname || '/'
+
+  const handleLogin = event => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    console.log(email, password);
+    signIn(email, password)
+      .then(result => {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        navigate(from, {replace: true})
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full sm:w-96">
@@ -12,41 +40,42 @@ const LoginPage = () => {
         </div>
 
 
-        {/* Username */}
-        <div className="mb-4">
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="email"
-            className="mt-1 p-2 w-full border rounded-md"
-            placeholder="Enter your username"
-          />
-        </div>
+        <form onSubmit={handleLogin}>
+          {/* Username */}
+          <div className="mb-4">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="email"
+              className="mt-1 p-2 w-full border rounded-md"
+              placeholder="Enter your username"
+            />
+          </div>
 
-        {/* Password */}
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className="mt-1 p-2 w-full border rounded-md"
-            placeholder="Enter your password"
-          />
-        </div>
+          {/* Password */}
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              className="mt-1 p-2 w-full border rounded-md"
+              placeholder="Enter your password"
+            />
+          </div>
 
-        {/* Login Button */}
-        <button
-          className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300"
-        >
-          Login
-        </button>
-
+          {/* Login Button */}
+          <button
+            className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300"
+          >
+            Login
+          </button>
+        </form>
         <hr className="my-6 border-t" />
 
         {/* Social Logins */}
@@ -66,6 +95,7 @@ const LoginPage = () => {
         <div>
           <p>If you haven't created an account yet, you can easily do so by  <Link to="/signup" className="text-red-700 font-bold underline">signing up here</Link>.</p>
         </div>
+
 
       </div>
     </div>

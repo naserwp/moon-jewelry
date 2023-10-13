@@ -1,8 +1,11 @@
 // import React, { useState } from 'react';
 
 import { useState } from "react";
+import useTitle from "../../hooks/useTitle";
 
 const MyJewelry = () => {
+  useTitle('My Jewelry List') 
+
   const [jewelryList, setJewelryList] = useState([
     {
       id: 1,

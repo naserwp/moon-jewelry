@@ -1,6 +1,7 @@
 // import React, { useState } from 'react';
 
 import { useState } from "react";
+import useTitle from "../../../hooks/useTitle";
 
 const UserProfile = () => {
   // User info state
@@ -11,6 +12,7 @@ const UserProfile = () => {
     notes: '',
     totalJewelry: 0,
   });
+  useTitle('User Profile') 
 
   // Form input change handlers
   const handleNameChange = (e) => {
