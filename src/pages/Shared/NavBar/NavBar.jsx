@@ -59,7 +59,7 @@ const NavBar = () => {
                                 <li>
                                     <Link to="/profile" className="justify-between">
                                         <FaUser></FaUser>
-                                        <p>{user.email}</p>
+                                        {/* <p>{user.email}</p> */}
                                         <div className='flex gap-2'>
                                             {user.displayName}
                                         </div>

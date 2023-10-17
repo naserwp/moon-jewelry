@@ -6,8 +6,14 @@ import { AuthContext } from '../../../providers/AuthProvider';
 import useTitle from '../../../hooks/useTitle';
 
 const LoginPage = () => {
-  useTitle('Login') 
+  useTitle('Login')
   const { signIn } = useContext(AuthContext);
+  const { handleGoogleLogin } = useContext(AuthContext); // Add handleGoogleLogin
+  const { user } = useContext(AuthContext);
+  const displayName = user ? user.displayName : null;
+  console.log('User Display Name:', displayName);
+  
+
   const navigate = useNavigate();
   const location = useLocation();
   console.log("LOgin Page LocatiON:", location);
@@ -24,12 +30,13 @@ const LoginPage = () => {
       .then(result => {
         const loggedUser = result.user;
         console.log(loggedUser);
-        navigate(from, {replace: true})
+        navigate(from, { replace: true })
       })
       .catch(error => {
         console.log(error);
       })
   }
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -88,9 +95,18 @@ const LoginPage = () => {
           <button className="text-3xl text-blue-400 hover:text-blue-500">
             <FaTwitter></FaTwitter>
           </button>
-          <button className="text-3xl text-red-600 hover:text-red-700">
+          {/* <button className="text-3xl text-red-600 hover:text-red-700">
+            <FaGoogle></FaGoogle>
+          </button> */}
+
+          <button
+            onClick={handleGoogleLogin} // Call handleGoogleLogin on button click
+            className="text-3xl text-red-600 hover:text-red-700"
+          >
             <FaGoogle></FaGoogle>
           </button>
+
+
         </div>
         <div>
           <p>If you haven't created an account yet, you can easily do so by  <Link to="/signup" className="text-red-700 font-bold underline">signing up here</Link>.</p>

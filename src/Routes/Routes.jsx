@@ -1,6 +1,6 @@
 import {
-    createBrowserRouter,
-  } from "react-router-dom";
+  createBrowserRouter,
+} from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../pages/Home/Home/Home";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
@@ -20,36 +20,36 @@ import Contact from "../pages/Contact/Contact";
 
 
 
- export const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Main></Main>,
-      children: [
-        {
-            path: '/',
-            element: <Home></Home>
-        },
-        // Add a catch-all route for 404 errors
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Main></Main>,
+    children: [
+      {
+        path: '/',
+        element: <Home></Home>
+      },
+      // Add a catch-all route for 404 errors
       {
         path: '*',
         element: <NotFoundPage></NotFoundPage>
       },
       {
-        path:'all-jewelry',
+        path: 'all-jewelry',
         element: <AllJewelry></AllJewelry>
       },
       {
-        path:'login',
+        path: 'login',
         element: <LoginPage></LoginPage>
       },
       {
-        path:'signup',
+        path: 'signup',
         element: <SignUpPage></SignUpPage>
       },
       {
         path: 'my-jewelry',
         element: <PrivateRoute>
-            <MyJewelry></MyJewelry>
+          <MyJewelry></MyJewelry>
         </PrivateRoute>
       },
       {
@@ -62,11 +62,15 @@ import Contact from "../pages/Contact/Contact";
       },
       {
         path: 'client-dashboard',
-        element: <ClientDashboard></ClientDashboard>
+        element: <PrivateRoute>
+          <ClientDashboard></ClientDashboard>
+        </PrivateRoute>
       },
       {
         path: 'owner-dashboard',
-        element: <OwnerDashboard></OwnerDashboard>
+        element: <PrivateRoute>
+          <OwnerDashboard></OwnerDashboard>
+        </PrivateRoute>
       },
       {
         path: `view/:id`,
@@ -80,7 +84,7 @@ import Contact from "../pages/Contact/Contact";
         path: 'contact',
         element: <Contact></Contact>
       }
-      
-      ]
-    },
-  ]);
+
+    ]
+  },
+]);

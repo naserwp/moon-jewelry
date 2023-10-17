@@ -2,12 +2,15 @@ import React, { useContext, useState } from 'react';
 // import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { AuthContext } from '../../../providers/AuthProvider';
 import useTitle from '../../../hooks/useTitle';
+import { Link } from 'react-router-dom';
+import { FaFacebookF, FaGoogle, FaTwitter } from 'react-icons/fa';
 
 const SignUpPage = () => {
 
   const { createUser } = useContext(AuthContext);
-  const [isAccepted, setIsAccepted] = useState(false); 
-  useTitle('Sign Up')  
+  const { handleGoogleLogin } = useContext(AuthContext);
+  const [isAccepted, setIsAccepted] = useState(false);
+  useTitle('Sign Up')
   const handleRegister = event => {
     event.preventDefault();
     const form = event.target;
@@ -23,14 +26,34 @@ const SignUpPage = () => {
 
     console.log(name, email, password, confirmPassword, photoUrl, gender, phoneNumber, address, acceptTerms)
 
+    // createUser(email, password)
+    //   .then(result => {
+    //     const createdUser = result.user;
+    //     console.log(createdUser);
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //   })
+
     createUser(email, password)
-      .then(result => {
-        const createdUser = result.user;
-        console.log(createdUser);
-      })
-      .catch(error => {
-        console.log(error)
-      })
+  .then(result => {
+    const createdUser = result.user;
+    console.log(createdUser);
+
+    // After user creation, set the display name and photo URL
+    createdUser.updateProfile({
+      displayName: name,
+      photoURL: photoUrl, // You can also set the photo URL here
+    }).then(() => {
+      console.log('Display name and photo URL set successfully.');
+    }).catch(error => {
+      console.error('Error setting display name and photo URL:', error);
+    });
+  })
+  .catch(error => {
+    console.log(error);
+  });
+
   }
 
   // const [formData, setFormData] = useState({
@@ -66,8 +89,8 @@ const SignUpPage = () => {
   //   }
   // };
 
-   // Handle the checkbox change
-   const handleAccepted = (event) => {
+  // Handle the checkbox change
+  const handleAccepted = (event) => {
     setIsAccepted(event.target.checked);
   };
   return (
@@ -216,6 +239,34 @@ const SignUpPage = () => {
             Sign Up
           </button>
         </form>
+        <div className='mt-7'>
+          {/* Social Logins */}
+          <div className="flex items-center space-x-4">
+            <span className="text-gray-500">Or Signup with:</span>
+            <button className="text-3xl text-indigo-600 hover:text-indigo-700">
+              <i className="fab fa-facebook"></i>
+              <FaFacebookF></FaFacebookF>
+            </button>
+            <button className="text-3xl text-blue-400 hover:text-blue-500">
+              <FaTwitter></FaTwitter>
+            </button>
+            {/* <button className="text-3xl text-red-600 hover:text-red-700">
+            <FaGoogle></FaGoogle>
+          </button> */}
+
+            <button
+              onClick={handleGoogleLogin} // Call handleGoogleLogin on button click
+              className="text-3xl text-red-600 hover:text-red-700"
+            >
+              <FaGoogle></FaGoogle>
+            </button>
+
+
+          </div>
+          <div>
+            <p>If you haven an account, you can easily do so by  <Link to="/login" className="text-red-700 font-bold underline">Login Here here</Link>.</p>
+          </div>
+        </div>
       </div>
     </div>
   );
