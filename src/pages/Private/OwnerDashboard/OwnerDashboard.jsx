@@ -1,4 +1,15 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "../../../firebase/firebase.config";
 import useTitle from "../../../hooks/useTitle";
 
 const initialFormState = {
@@ -14,17 +25,82 @@ const OwnerDashboard = () => {
   const [coupons, setCoupons] = useState([]);
   const [couponForm, setCouponForm] = useState(initialFormState);
   const [formError, setFormError] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingCoupons, setIsLoadingCoupons] = useState(true);
+  const [tableError, setTableError] = useState("");
+  const [deletingCouponId, setDeletingCouponId] = useState("");
+
+  const minExpirationDate = useMemo(
+    () => new Date().toISOString().split("T")[0],
+    []
+  );
+
+  useEffect(() => {
+    const couponsQuery = query(
+      collection(db, "coupons"),
+      orderBy("createdAt", "desc")
+    );
+
+    let unsubscribe = () => {};
+
+    try {
+      unsubscribe = onSnapshot(
+        couponsQuery,
+        (snapshot) => {
+          const parsedCoupons = snapshot.docs.map((couponDoc) => {
+            const data = couponDoc.data();
+            return {
+              id: couponDoc.id,
+              code: data.code ?? "",
+              discount: data.discount ?? 0,
+              expiresAt: data.expiresAt ?? "",
+              description: data.description ?? "",
+              createdAt:
+                typeof data.createdAt?.toDate === "function"
+                  ? data.createdAt.toDate()
+                  : null,
+            };
+          });
+
+          setCoupons(parsedCoupons);
+          setTableError("");
+          setIsLoadingCoupons(false);
+        },
+        (error) => {
+          console.error("Failed to load coupons", error);
+          setTableError("Failed to load coupons. Please try again.");
+          setIsLoadingCoupons(false);
+        }
+      );
+    } catch (error) {
+      console.error("Failed to subscribe to coupons", error);
+      setTableError("Failed to load coupons. Please try again.");
+      setIsLoadingCoupons(false);
+    }
+
+    return unsubscribe;
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    setStatusMessage("");
+    setFormError("");
     setCouponForm((previous) => ({
       ...previous,
       [name]: value,
     }));
   };
 
-  const handleCreateCoupon = (event) => {
+  const handleCreateCoupon = async (event) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+
+    setFormError("");
+    setStatusMessage("");
 
     const trimmedCode = couponForm.code.trim();
     const trimmedDescription = couponForm.description.trim();
@@ -35,7 +111,11 @@ const OwnerDashboard = () => {
       return;
     }
 
-    if (Number.isNaN(numericDiscount) || numericDiscount <= 0 || numericDiscount > 100) {
+    if (
+      Number.isNaN(numericDiscount) ||
+      numericDiscount <= 0 ||
+      numericDiscount > 100
+    ) {
       setFormError("Discount must be a number between 1 and 100.");
       return;
     }
@@ -45,22 +125,76 @@ const OwnerDashboard = () => {
       return;
     }
 
-    const newCoupon = {
-      id: crypto.randomUUID(),
-      code: trimmedCode,
-      discount: numericDiscount,
-      expiresAt: couponForm.expiresAt,
-      description: trimmedDescription,
-      createdAt: new Date().toISOString(),
-    };
+    const doesCouponExist = coupons.some(
+      (coupon) => coupon.code.toLowerCase() === trimmedCode.toLowerCase()
+    );
 
-    setCoupons((previous) => [newCoupon, ...previous]);
-    setCouponForm(initialFormState);
-    setFormError("");
+    if (doesCouponExist) {
+      setFormError("A coupon with this code already exists.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await addDoc(collection(db, "coupons"), {
+        code: trimmedCode,
+        discount: numericDiscount,
+        expiresAt: couponForm.expiresAt,
+        description: trimmedDescription,
+        createdAt: serverTimestamp(),
+      });
+
+      setCouponForm(initialFormState);
+      setStatusMessage("Coupon created successfully.");
+    } catch (error) {
+      console.error("Failed to create coupon", error);
+      setFormError("Unable to create coupon. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleRemoveCoupon = (couponId) => {
-    setCoupons((previous) => previous.filter((coupon) => coupon.id !== couponId));
+  const handleRemoveCoupon = async (couponId) => {
+    if (!couponId) {
+      return;
+    }
+
+    setStatusMessage("");
+    setTableError("");
+    setDeletingCouponId(couponId);
+
+    try {
+      await deleteDoc(doc(db, "coupons", couponId));
+      setStatusMessage("Coupon removed successfully.");
+    } catch (error) {
+      console.error("Failed to remove coupon", error);
+      setTableError("Failed to remove coupon. Please try again.");
+    } finally {
+      setDeletingCouponId("");
+    }
+  };
+
+  const formatExpirationDate = (value) => {
+    if (!value) {
+      return "—";
+    }
+
+    if (typeof value?.toDate === "function") {
+      return value.toDate().toLocaleDateString();
+    }
+
+    if (value instanceof Date) {
+      return value.toLocaleDateString();
+    }
+
+    const parsedDate = new Date(`${value}T00:00:00`);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return value;
+    }
+
+    return parsedDate.toLocaleDateString();
   };
 
   return (
@@ -99,6 +233,26 @@ const OwnerDashboard = () => {
 
       {/* Coupon Management Section */}
       <section className="mb-8 p-6 bg-white rounded-lg shadow-md">
+        {(statusMessage || tableError) && (
+          <div className="mb-4 space-y-2">
+            {statusMessage && (
+              <div
+                className="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700"
+                role="status"
+              >
+                {statusMessage}
+              </div>
+            )}
+            {tableError && (
+              <div
+                className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700"
+                role="alert"
+              >
+                {tableError}
+              </div>
+            )}
+          </div>
+        )}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="lg:w-1/2">
             <h2 className="text-xl font-semibold mb-4">Create Coupon</h2>
@@ -148,6 +302,7 @@ const OwnerDashboard = () => {
                   id="expiresAt"
                   name="expiresAt"
                   type="date"
+                  min={minExpirationDate}
                   value={couponForm.expiresAt}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
@@ -178,16 +333,25 @@ const OwnerDashboard = () => {
 
               <button
                 type="submit"
-                className="w-full rounded-md bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700"
+                disabled={isSubmitting}
+                className={`w-full rounded-md bg-indigo-600 px-4 py-2 font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-indigo-200 ${
+                  isSubmitting
+                    ? "cursor-not-allowed opacity-70"
+                    : "hover:bg-indigo-700"
+                }`}
               >
-                Create Coupon
+                {isSubmitting ? "Creating..." : "Create Coupon"}
               </button>
             </form>
           </div>
 
           <div className="lg:w-1/2">
             <h2 className="text-xl font-semibold mb-4">Active Coupons</h2>
-            {coupons.length === 0 ? (
+            {isLoadingCoupons ? (
+              <p className="text-sm text-gray-500">Loading coupons...</p>
+            ) : tableError ? (
+              <p className="text-sm text-red-600">Unable to display coupons right now.</p>
+            ) : coupons.length === 0 ? (
               <p className="text-sm text-gray-500">No coupons have been created yet.</p>
             ) : (
               <div className="overflow-x-auto">
@@ -217,7 +381,7 @@ const OwnerDashboard = () => {
                         <td className="px-4 py-3 font-semibold text-gray-900">{coupon.code}</td>
                         <td className="px-4 py-3 text-gray-700">{coupon.discount}%</td>
                         <td className="px-4 py-3 text-gray-700">
-                          {new Date(coupon.expiresAt).toLocaleDateString()}
+                          {formatExpirationDate(coupon.expiresAt)}
                         </td>
                         <td className="px-4 py-3 text-gray-600">
                           {coupon.description || "—"}
@@ -226,9 +390,14 @@ const OwnerDashboard = () => {
                           <button
                             type="button"
                             onClick={() => handleRemoveCoupon(coupon.id)}
-                            className="rounded-md bg-red-500 px-3 py-1 text-sm font-medium text-white transition hover:bg-red-600"
+                            disabled={deletingCouponId === coupon.id}
+                            className={`rounded-md bg-red-500 px-3 py-1 text-sm font-medium text-white transition focus:outline-none focus:ring-2 focus:ring-red-200 ${
+                              deletingCouponId === coupon.id
+                                ? "cursor-not-allowed opacity-70"
+                                : "hover:bg-red-600"
+                            }`}
                           >
-                            Delete
+                            {deletingCouponId === coupon.id ? "Removing..." : "Delete"}
                           </button>
                         </td>
                       </tr>
